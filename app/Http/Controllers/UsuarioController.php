@@ -10,6 +10,7 @@ use App\Models\Vehiculo;
 use App\Models\Especialidad;
 use App\Models\GrupoSanguineo;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class UsuarioController extends Controller
 {
@@ -292,32 +293,32 @@ class UsuarioController extends Controller
         return redirect()->route('usuario.index');
     }
     public function login (Request $request){
+        
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
     
-        $user = Usuario::where('email', $request->email)->first();
+        if (Auth::attempt($credentials)) {
+
+            $request->session()->regenerate();
  
-        if (! $user || ! Hash::check($request->password, $user->password)) {
-            return response()->json([
-                "status" => 401,
-                "message" => "Las credenciales no son correctas"
-            ]);
+            return redirect()->route('home');
         }else{
-            $token = $user->createToken($user->email.'_token')->plainTextToken;
-            return response()->json([
-                "status" => 200,
-                "name" => $user->nombres,
-                "token" => $token,
-                "message" => "iniciado sesión con éxito"
-            ]);
+
+            session()->flash('danger', 'las Credenciales no coinciden !!!');
+
+            return redirect()->route('usuario.login');
         }
         
     }
     public function logout(){
-        auth()->guard('web')->logout();
-        //Auth::logout();
-        return response()->json([
-            "status" => 200,
-            "message" => "Cerraste sesión con éxito"
-        ]);
 
+        Auth::logout();
+        return redirect('/');
+
+    }
+    public function showLogin(){
+        return view('login');
     }
 }

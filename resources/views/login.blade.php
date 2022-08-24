@@ -37,6 +37,7 @@
             <div class="pt-1 mb-4">
               <button class="btn btn-info btn-lg btn-block" type="submit">Iniciar Sesion</button>
             </div>
+             @include('layouts.messages')
             <p><span>Copyright &copy; ANTHARAS 2022</span></p>
 
           </form>

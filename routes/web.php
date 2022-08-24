@@ -19,14 +19,18 @@ use App\Http\Controllers\ActivacionController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('login');
 });
 
 Route::get('/home', function () {
     return view('home');
-});
+})->name('home');
+Route::get('/login',[UsuarioController::class,'showLogin'])
+	->name('usuario.login');
 Route::post('/login',[UsuarioController::class,'login'])
 	->name('usuario.login');
+Route::get('/logout',[UsuarioController::class,'logout'])
+	->name('usuario.logout');
 Route::prefix('rrhh')->group(function () {
     Route::get('/usuario/all',[UsuarioController::class,'showUsuario'])
 	->name('usuario.all');
