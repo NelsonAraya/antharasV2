@@ -45,8 +45,8 @@ $(document).ready(function() {
                  "width": "10%",
                  render: function ( data, type, row ) {
 
-                    let x= '<a href="#" class="btn btn-warning justify-content-center"><i class="fas fa-fw fa-cog"></i></a><a href="{{ route("usuario.edit", "xid" ) }}" class="btn btn-success justify-content-center"><i class="fas fa-fw fa-edit"></i></a><a href="#" class="btn btn-info justify-content-center"><i class="fas fa-fw fa-eye"></i></a><a href="{{ route("usuario.especialidad", "xid2" ) }}" class="btn btn-primary justify-content-center"><i class="fas fa-fw fa-list"></i></a>';
-                    let botones = x.replace('xid',row.id).replace('xid2',row.id);
+                    let x= '<a href="{{ route("usuario.rol", "permiso" ) }}" class="btn btn-warning justify-content-center"><i class="fas fa-fw fa-cog"></i></a><a href="{{ route("usuario.edit", "xid" ) }}" class="btn btn-success justify-content-center"><i class="fas fa-fw fa-edit"></i></a><a href="#" class="btn btn-info justify-content-center"><i class="fas fa-fw fa-eye"></i></a><a href="{{ route("usuario.especialidad", "xid2" ) }}" class="btn btn-primary justify-content-center"><i class="fas fa-fw fa-list"></i></a>';
+                    let botones = x.replace('xid',row.id).replace('xid2',row.id).replace('permiso',row.id);
                    return botones;
                 }
              },

@@ -64,4 +64,38 @@ class Usuario extends Authenticatable
         return $this->hasOne(FichaClinica::class,'usuario_id','id');
     }
 
+    public function roles(){   
+        
+        return $this->belongsToMany(Role::class);
+    }
+      /**
+      * @param string|array $roles
+      */
+    public function authorizeRoles($roles){
+      
+        if (is_array($roles)) {
+          return $this->hasAnyRole($roles) ||
+          abort(401, 'This action is unauthorized.');
+        }
+      
+        return $this->hasRole($roles) ||
+        abort(401, 'This action is unauthorized.');
+    }
+      /**
+      * Check multiple roles
+      * @param array $roles
+      */
+      public function hasAnyRole($roles){
+      
+          return null !== $this->roles()->whereIn('nombre', $roles)->first();
+      }
+      /**
+      * Check one role
+      * @param string $role
+      */
+      public function hasRole($role){
+      
+          return null !== $this->roles()->where('nombre', $role)->first();
+      }
+
 }

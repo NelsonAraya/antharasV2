@@ -8,6 +8,7 @@ use App\Models\Cia;
 use App\Models\Cargo;
 use App\Models\Vehiculo;
 use App\Models\Especialidad;
+use App\Models\Role;
 use App\Models\GrupoSanguineo;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -270,8 +271,8 @@ class UsuarioController extends Controller
 
         return redirect()->route('conductor.index');
     }
-    public function myEspecialidades($id)
-    {
+    public function myEspecialidades($id){
+
         $usu = Usuario::FindOrFail($id);
         $esp = Especialidad::all();
         return view('rrhh.usuarios.especialidades')
@@ -320,5 +321,28 @@ class UsuarioController extends Controller
     }
     public function showLogin(){
         return view('login');
+    }
+
+    public function permisoUsuario($id){
+        $usu = Usuario::FindOrFail($id);
+        $rol = Role::all();
+        return view('rrhh.usuarios.role')
+                ->with('usu',$usu)
+                ->with('rol',$rol);
+
+    }
+
+    public function updatePermiso(Request $request, $id){
+        $usu = Usuario::FindOrFail($id);
+
+        $usu->roles()->detach();
+
+        foreach ((array)$request->roles as $row){
+              $usu->roles()->attach($row);
+        }
+
+        session()->flash('info', 'Los Permisos de '.$usu->nombreSimple().' han sido modificados Con Exito!!');
+
+        return redirect()->route('usuario.index');
     }
 }

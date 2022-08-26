@@ -20,7 +20,7 @@ use App\Http\Controllers\ActivacionController;
 
 Route::get('/', function () {
     return view('login');
-});
+})->name('inicio');
 
 Route::get('/home', function () {
     return view('home');
@@ -31,7 +31,8 @@ Route::post('/login',[UsuarioController::class,'login'])
 	->name('usuario.login');
 Route::get('/logout',[UsuarioController::class,'logout'])
 	->name('usuario.logout');
-Route::prefix('rrhh')->group(function () {
+
+Route::prefix('rrhh')->middleware(['auth','role:rrhh'])->group(function () {
     Route::get('/usuario/all',[UsuarioController::class,'showUsuario'])
 	->name('usuario.all');
     Route::get('/conductor/all',[UsuarioController::class,'showConductor'])
@@ -42,16 +43,18 @@ Route::prefix('rrhh')->group(function () {
 	->name('conductor.show');
     Route::get('/usuario/{usuario}/myespecialidad',[UsuarioController::class,'myEspecialidades'])
 	->name('usuario.especialidad');
+    Route::get('/usuario/{usuario}/permisos',[UsuarioController::class,'permisoUsuario'])
+	->name('usuario.rol');
     Route::put('/conductor/{conductor}',[UsuarioController::class,'updateConductor'])
 	->name('conductor.update');
     Route::put('/usuario/{usu}/esp',[UsuarioController::class,'updateEspecialidad'])
 	->name('usuario.updateesp');
+    Route::put('/usuario/{usu}/rol',[UsuarioController::class,'updatePermiso'])
+	->name('usuario.updaterol');
     Route::resource('usuario', UsuarioController::class);
 });
 
-
-
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware(['auth','role:admin'])->group(function () {
     Route::get('/vehiculo/all',[VehiculoController::class,'showVehiculos'])
 	->name('vehiculo.all');
     Route::get('/clave/all',[ClaveEmergenciaController::class,'showClaves'])
@@ -70,13 +73,16 @@ Route::prefix('admin')->group(function () {
 	->name('enfermedad.setenfermedad');
     Route::get('/ficha/enfermedad/{id}/usuario',[FichaClinicaController::class,'showEnfermedadUsuarios'])
 	->name('enfermedad.usuario');
-});
+
     Route::resource('vehiculo', VehiculoController::class);
     Route::resource('clave', ClaveEmergenciaController::class);
     Route::resource('especialidad', EspecialidadesController::class);
     Route::resource('ficha', FichaClinicaController::class);
+});
+    
+
     Route::get('/activacion/{id}/{veh}/{estado}',[ActivacionController::class,'activacion'])
-	->name('activacion.activacion');
+	->name('activacion.activacion')->middleware('auth','role:activacion');
     Route::get('/activacion/{id}/{estado}',[ActivacionController::class,'tipoConductor'])
-	->name('activacion.tipo');
-    Route::resource('activacion', ActivacionController::class);
+	->name('activacion.tipo')->middleware('auth','role:activacion');
+    Route::resource('activacion', ActivacionController::class,['middleware' => ['role:activacion', 'auth']]);
