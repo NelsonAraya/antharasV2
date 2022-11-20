@@ -320,7 +320,12 @@ class UsuarioController extends Controller
 
     }
     public function showLogin(){
-        return view('login');
+        
+        if (Auth::check()) {
+           return redirect()->route('home');
+        }else{
+             return view('login');
+        }
     }
 
     public function permisoUsuario($id){

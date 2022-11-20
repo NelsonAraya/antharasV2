@@ -7,6 +7,8 @@ use App\Http\Controllers\ClaveEmergenciaController;
 use App\Http\Controllers\EspecialidadesController;
 use App\Http\Controllers\FichaClinicaController;
 use App\Http\Controllers\ActivacionController;
+use App\Http\Controllers\EmergenciaController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,7 +26,8 @@ Route::get('/', function () {
 
 Route::get('/home', function () {
     return view('home');
-})->name('home');
+})->name('home')->middleware('auth');
+
 Route::get('/login',[UsuarioController::class,'showLogin'])
 	->name('usuario.login');
 Route::post('/login',[UsuarioController::class,'login'])
@@ -80,9 +83,14 @@ Route::prefix('admin')->middleware(['auth','role:admin'])->group(function () {
     Route::resource('ficha', FichaClinicaController::class);
 });
     
-
+    Route::get('/activacion/{id}/{veh}/cambio',[ActivacionController::class,'cambioConductor'])
+	->name('activacion.cambio')->middleware('auth','role:activacion');
     Route::get('/activacion/{id}/{veh}/{estado}',[ActivacionController::class,'activacion'])
 	->name('activacion.activacion')->middleware('auth','role:activacion');
     Route::get('/activacion/{id}/{estado}',[ActivacionController::class,'tipoConductor'])
 	->name('activacion.tipo')->middleware('auth','role:activacion');
     Route::resource('activacion', ActivacionController::class,['middleware' => ['role:activacion', 'auth']]);
+
+    Route::get('/emergencia/all',[EmergenciaController::class,'showEmergencia'])
+	->name('emergencia.all');
+    Route::resource('emergencia', EmergenciaController::class);

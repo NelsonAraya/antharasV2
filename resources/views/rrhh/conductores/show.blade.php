@@ -77,24 +77,26 @@ input:checked + .slider:before {
             
             <div class="form-group row">
                 @foreach($veh as $key)
-                    @php
-	  					      $flag=false;
-	  				        @endphp
-                    @foreach($usu->vehiculos as $row)
-                        @if($row->id == $key->id)
-                            @php
-                            $flag=true;
-                            break;
-                            @endphp
-                        @endif
-	  			          @endforeach
-                <div class="col-md-1">
-                     {{ 'UNI : '.$key->clave }}
-                  <label class="switch checkbox-inline"><input type="checkbox" @if($flag) checked="checked" @endif
-                    name="vehiculos[]" value="{{ $key->id }}">
-                    <span class="slider round"></span>
-                  </label>
-		  			    </div>
+                  @if($key->uniActiva())
+                        @php
+                        $flag=false;
+                        @endphp
+                        @foreach($usu->vehiculos as $row)
+                            @if($row->id == $key->id)
+                                @php
+                                $flag=true;
+                                break;
+                                @endphp
+                            @endif
+                        @endforeach
+                    <div class="col-md-1">
+                        {{ 'UNI : '.$key->clave }}
+                      <label class="switch checkbox-inline"><input type="checkbox" @if($flag) checked="checked" @endif
+                        name="vehiculos[]" value="{{ $key->id }}">
+                        <span class="slider round"></span>
+                      </label>
+                    </div>
+                  @endif  
                 @endforeach 
             </div>
             <div class="form-group row">

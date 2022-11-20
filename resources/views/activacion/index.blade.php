@@ -136,7 +136,7 @@ input:checked + .slider:before {
                                      >ACTIVAR</a>
                                     <a 
                                      @if($row->lastActivacion()!== null )
-                                        @if($row->lastActivacion()->estado=='S')
+                                        @if($row->lastActivacion()->estado=='S' && $row->lastActivacion()->usuario->id == Auth::user()->id )
                                           href="{{ route('activacion.activacion',[$usu->id,$row->id,'N']) }}"
                                           class="btn btn-danger justify-content-center"
                                         @else
@@ -146,8 +146,8 @@ input:checked + .slider:before {
                                      @endif                                    
                                      >DESACTIVAR</a>
                                     <a @if($row->lastActivacion()!== null )
-                                        @if($row->lastActivacion()->estado=='S')
-                                          href="#"
+                                        @if($row->lastActivacion()->estado=='S' && $row->lastActivacion()->usuario->id != Auth::user()->id)
+                                          href="{{ route('activacion.cambio',[$row->lastActivacion()->usuario->id,$row->id]) }}"
                                           class="btn btn-warning justify-content-center"
                                         @else
                                           href="#"

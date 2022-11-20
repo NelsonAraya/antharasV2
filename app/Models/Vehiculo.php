@@ -20,8 +20,17 @@ class Vehiculo extends Model
     public function activaciones(){
         return $this->hasMany(Activacion::class,'vehiculo_id','id');
     }
-    public function lastActivacion()
-    {
-    return $this->activaciones()->where('vehiculo_id',$this->id)->latest()->first();
+    public function lastActivacion(){
+
+    return $this->activaciones()->where('vehiculo_id',$this->id)->latest('id')->first();
+
+    }
+    public function uniActiva(){
+      
+        if($this->estado=='A'){
+            return true;
+        }else{
+            return false;
+        }
     }
 }

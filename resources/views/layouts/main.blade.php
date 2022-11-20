@@ -106,7 +106,7 @@
                     <span>Bitacoras</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="{{ route('emergencia.index') }}">
                     <i class="fas fa-fw fa-folder-plus"></i>
                     <span>Emergencias</span></a>
             </li>

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Usuario;
 use App\Models\Activacion;
 use App\Models\Vehiculo;
+use Illuminate\Support\Facades\Auth;
 
 class ActivacionController extends Controller
 {
@@ -16,7 +17,7 @@ class ActivacionController extends Controller
      */
     public function index()
     {
-        $usuario = Usuario::FindOrFail(17096233);
+        $usuario = Usuario::FindOrFail(Auth::user()->id);
         return view ('activacion.index')
                 ->with('usu',$usuario);
     }
@@ -86,8 +87,7 @@ class ActivacionController extends Controller
     {
         //
     }
-    public function activacion($id,$veh,$estado)
-    {
+    public function activacion($id,$veh,$estado){
         $vehiculo = Vehiculo::FindOrFail($veh);
         $usu = Usuario::FindOrFail($id);
         $acti = new Activacion();
@@ -131,5 +131,39 @@ class ActivacionController extends Controller
 
        return redirect()->route('activacion.index');
        
-   }   
+   }
+   public function cambioConductor($id,$veh){
+
+    $usu = Usuario::FindOrFail($id);
+    $usu_cambio = Usuario::FindOrFail(Auth::user()->id);
+    $acti = new Activacion();
+    $new_acti = new Activacion();
+    $vehiculo = Vehiculo::FindOrFail($veh);
+
+    $acti->usuario_id=$id;
+    $acti->vehiculo_id=$veh;
+    $acti->estado='C';
+    $acti->usuario_cambio_id=Auth::user()->id;
+    $acti->tipo_activacion=$usu->tipo_conductor;
+    $acti->save();
+
+    $new_acti->usuario_id=Auth::user()->id;
+    $new_acti->vehiculo_id=$veh;
+    $new_acti->estado='S';
+    $new_acti->tipo_activacion=Auth::user()->tipo_conductor;
+    $new_acti->save();
+
+    $usu->activado = 'N';
+    $usu->activado_conductor ='N';
+    $usu->save();
+
+    $usu_cambio->activado = 'S';
+    $usu_cambio->activado_conductor = 'S';
+    $usu_cambio->save();
+
+    session()->flash('info', 'Ha realizado un cambio de Conductor  Unidad :'.$vehiculo->clave);
+ 
+    return redirect()->route('activacion.index');
+
+}   
 }
